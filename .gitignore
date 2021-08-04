@@ -94,4 +94,8 @@ modules.xml
 # Sonarlint plugin
 .idea/sonarlint
 
+out/
+target/
+src/main/resources/curriculum/
+
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all
