@@ -3,10 +3,7 @@ package data;
 import com.mysql.cj.jdbc.Driver;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +28,19 @@ public class MySqlMoviesDao implements MoviesDao {
 
     @Override
     public List<Movie> all() throws SQLException {
+        Statement statement = connection.createStatement();
+
+        ResultSet rs = statement.executeQuery("SELECT * FROM movies");
+
+        List<Movie> movies = new ArrayList<>();
+
+        while (rs.next()){
+            movies.add(new Movie(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("poster")
+            ));
+        }
         return null;
         // TODO: Get ALL the movies
     }
@@ -55,7 +65,7 @@ public class MySqlMoviesDao implements MoviesDao {
 
 
         // Add a interpolation template for each element in movies list
-        sql.append("(?, ?, ?), ".repeat(movies.length));
+        sql.append("(?, ?, ?)".repeat(movies.length));
 
         // Create a new String and take off the last comma and whitespace
         sql = new StringBuilder(sql.substring(0, sql.length() - 2));
@@ -78,11 +88,32 @@ public class MySqlMoviesDao implements MoviesDao {
 
     @Override
     public void update(Movie movie) throws SQLException {
+
+        String sql = "UPDATE " +
+                "SET title = ?, poster = ?" +
+                "WHERE id = ?";
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, movie.getTitle());
+        statement.setString(2, movie.getPoster());
+        statement.setInt(3, movie.getId());
+
+        statement.executeUpdate();
+
+
         //TODO: Update a movie here!
     }
 
     @Override
     public void destroy(int id) throws SQLException {
+
+        String sql = "DELETE FROM movies WHERE id = ?";
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setInt(1, id);
+
+        statement.execute();
         //TODO: Annihilate a movie
     }
 }
