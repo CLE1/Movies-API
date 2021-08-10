@@ -1,26 +1,25 @@
 package data;
 
-
-
-import java.io.ObjectInputFilter;
-
 public class DaoFactory {
 
     private static MoviesDao moviesDao;
-//    private static ObjectInputFilter.Config config = new ObjectInputFilter.Config();
-    public enum ImplType {MYSQL, IN_MEMORY}; //Notice we have two values here
+    private static Config config = new Config();
+    public enum ImplType {MYSQL, IN_MEMORY};
 
     public static MoviesDao getMoviesDao(ImplType implementationType){
 
         switch(implementationType){
-            case IN_MEMORY:{ //yet we have one switch case. We'll get to that!
-                if (moviesDao == null) {
+            case IN_MEMORY:{
+                if (moviesDao == null){
                     moviesDao = new InMemoryMoviesDao();
+                }
+            }
+            case MYSQL:{
+                if (moviesDao == null){
+                    moviesDao = new MySqlMoviesDao(config);
                 }
             }
         }
         return moviesDao;
     }
-
-
 }
